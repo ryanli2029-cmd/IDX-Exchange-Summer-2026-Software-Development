@@ -6,8 +6,6 @@ const pool = require('./db');
 const app = express();
 
 const PORT = process.env.PORT;
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 
@@ -33,6 +31,8 @@ app.get('/api/health', async (req, res) => {
   }
 });
 
+const propertiesRouter = require('./routes/properties');
+app.use('/api/properties', propertiesRouter);
 // Start server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
