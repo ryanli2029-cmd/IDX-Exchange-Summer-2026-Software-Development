@@ -1,15 +1,14 @@
 const express = require('express');
 const router = express.Router();
-const pool = require('../db'); // Your database connection pool from Week 2
+const pool = require('../db'); 
 
 // GET /api/properties
 router.get('/', async (req, res) => {
   try {
-    // 1. Extract Query Parameters from the URL string
+    // Extract Query Parameters from the URL string
     let { city, zipcode, minPrice, maxPrice, beds, baths, limit, offset } = req.query;
 
-    // 2. Data Validation & Sanitization (Requirement 14)
-    // Parse pagination strings into integers, defaulting to limit=20 and offset=0 (Requirement 12)
+    // Parse pagination strings into integers, defaulting to limit=20 and offset=0
     const parsedLimit = limit ? parseInt(limit, 10) : 20;
     const parsedOffset = offset ? parseInt(offset, 10) : 0;
 
@@ -35,13 +34,13 @@ router.get('/', async (req, res) => {
       return res.status(400).json({ error: "baths must be a valid non-negative number." });
     }
 
-    // 3. Dynamically Assemble SQL WHERE Clause using Real Schema Mappings (Requirement 13)
+    // Dynamically Assemble SQL WHERE Clause
     let whereClauses = [];
     let baseValues = []; // Stores our raw data values to insert safely later
 
     if (city) {
-      // Use LOWER(TRIM()) on both sides to handle inconsistent casing safely (Hint 2)
-      whereClauses.push("LOWER(TRIM(L_City)) = LOWER(TRIM(?))");
+      // Use LOWER(TRIM()) on both sides to handle inconsistent casing safely
+      whereClauses.push("LOWER(TRIM(L_City)) = LOWER(TRIM(?))"); // parameterized query for safety
       baseValues.push(city);
     }
     if (zipcode) {
@@ -68,20 +67,19 @@ router.get('/', async (req, res) => {
     // Join all pushed strings with ' AND ' if any filters were added
     const whereSql = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : '';
 
-    // 4. Query 1: Calculate Total Rows matching this specific criteria
-    // Necessary so the frontend knows how many total pages exist
+    // Calculate Total Rows matching this specific criteria
     const countQuery = `SELECT COUNT(*) AS total FROM rets_property ${whereSql};`;
     // We pass a shallow clone [...baseValues] so pagination variables don't pollute the count
     const [countRows] = await pool.query(countQuery, [...baseValues]);
     const total = countRows[0].total;
 
-    // 5. Query 2: Fetch the actual Paginated Data records
+    // Fetch the actual data records
     const dataQuery = `SELECT * FROM rets_property ${whereSql} LIMIT ? OFFSET ?;`;
     // Add pagination integers securely to the very end of our parameterized array
     const dataValues = [...baseValues, parsedLimit, parsedOffset];
     const [results] = await pool.query(dataQuery, dataValues);
 
-    // 6. Send the payload back matching the API Contract shape exactly
+    // Send the payload back matching the API Contract shape exactly
     return res.status(200).json({
       total,
       limit: parsedLimit,
