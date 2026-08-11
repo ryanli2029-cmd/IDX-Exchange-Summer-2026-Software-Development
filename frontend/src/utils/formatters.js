@@ -29,3 +29,26 @@ export function formatCurrency(amount) {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+
+export const getPhotoArray = (photosData) => {
+  if (!photosData) return [];
+
+  let array = [];
+
+  if (Array.isArray(photosData)) {
+    array = photosData;
+  } else if (typeof photosData === 'string') {
+    try {
+      const parsed = JSON.parse(photosData);
+      array = Array.isArray(parsed) ? parsed : [photosData];
+    } catch (e) {
+      array = [photosData];
+    }
+  }
+
+  // Clean up the array: filter out null, undefined, empty strings, or non-string values
+  return array.filter(
+    (url) => typeof url === 'string' && url.trim().length > 0 && url !== 'null'
+  );
+};

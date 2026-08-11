@@ -1,0 +1,42 @@
+.openhouses-container {
+  margin-top: 28px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.no-openhouses {
+  color: #64748b;
+  font-style: italic;
+  margin-top: 8px;
+}
+
+.openhouses-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.openhouse-card {
+  padding: 14px;
+  background-color: #f8fafc;
+  border-left: 4px solid #2563eb;
+  border-radius: 4px;
+}
+
+.oh-header {
+  display: flex;
+  gap: 16px;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.oh-remarks {
+  margin-top: 8px;
+  color: #475569;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+

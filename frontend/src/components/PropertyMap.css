@@ -1,0 +1,27 @@
+.property-map-container {
+  margin-top: 28px;
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}
+
+.map-wrapper {
+  margin: 14px 0;
+}
+
+.btn-directions {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #2563eb;
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.btn-directions:hover {
+  background-color: #1d4ed8;
+}
