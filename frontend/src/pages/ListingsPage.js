@@ -3,6 +3,7 @@ import { fetchProperties } from '../api/client';
 import PropertyCard from '../components/PropertyCard';
 import PropertyFilters from '../components/PropertyFilters';
 import Pagination from '../components/Pagination';
+import SortControls from '../components/SortControls';
 import './ListingsPage.css';
 
 export default function ListingsPage() {
@@ -13,6 +14,8 @@ export default function ListingsPage() {
 
   const [activeFilters, setActiveFilters] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortBy, setSortBy] = useState('date');
+  const [sortOrder, setSortOrder] = useState('DESC');
   const itemsPerPage = 20;
 
   useEffect(() => {
@@ -27,6 +30,8 @@ export default function ListingsPage() {
           ...activeFilters,
           limit: itemsPerPage,
           offset,
+          sortBy,
+          sortOrder,
         };
 
         const data = await fetchProperties(queryParams);
@@ -40,21 +45,27 @@ export default function ListingsPage() {
     }
 
     loadProperties();
-  }, [activeFilters, currentPage]);
+  }, [activeFilters, currentPage, sortBy, sortOrder]);
 
   const handleSearch = (newFilters) => {
-    setCurrentPage(1); // Requirement 35: Filter changes reset to page 1
+    setCurrentPage(1); // Requirement: Filter changes reset page to 1
     setActiveFilters(newFilters);
   };
 
   const handleClear = () => {
-    setCurrentPage(1); // Requirement 35: Clear resets to page 1
+    setCurrentPage(1); // Requirement: Filter clear resets page to 1
     setActiveFilters({});
   };
 
   const handlePageChange = (newPage) => {
-    setCurrentPage(newPage);
-    window.scrollTo({ top: 0, behavior: 'smooth' }); // Requirement 34
+    setCurrentPage(newPage); // Preserves sortBy & sortOrder
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleSortChange = (newSortBy, newSortOrder) => {
+    setSortBy(newSortBy);
+    setSortOrder(newSortOrder);
+    setCurrentPage(1); // Reset to page 1 when sort order changes
   };
 
   const totalPages = Math.ceil(totalCount / itemsPerPage);
@@ -71,6 +82,14 @@ export default function ListingsPage() {
       </header>
 
       <PropertyFilters onSearch={handleSearch} onClear={handleClear} />
+
+      <div className="listings-actions-row">
+        <SortControls
+          sortBy={sortBy}
+          sortOrder={sortOrder}
+          onSortChange={handleSortChange}
+        />
+      </div>
 
       {loading && (
         <div className="status-container">
