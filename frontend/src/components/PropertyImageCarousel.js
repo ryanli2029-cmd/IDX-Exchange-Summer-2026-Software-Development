@@ -28,7 +28,7 @@ export default function PropertyImageCarousel({ photosData }) {
     <div className="property-carousel">
       <img
         src={photos[currentIndex]}
-        alt={`Property photo ${currentIndex + 1}`}
+        alt={`Slide ${currentIndex + 1}`}
         className="carousel-image"
         onError={(e) => {
           e.target.src = 'https://via.placeholder.com/600x400?text=Image+Unavailable';
